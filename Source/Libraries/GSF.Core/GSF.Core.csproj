@@ -7,14 +7,14 @@
     <LangVersion>latest</LangVersion>
     <AssemblyTitle>GSF.Core</AssemblyTitle>
     <Company>Grid Protection Alliance</Company>
-    <Product>Grid Solutions Framework</Product>
+    <Product>Grid Solutions Framework *ATMS Modified*</Product>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Description>Library of .NET functions, extensions and components including asynchronous processing queues, configuration APIs, diagnostics, error handling, console functions, adapter framework, active directory and local account functions, checksum algorithms, unit conversion, binary parsing, cron-style task scheduler, Unix and NTP time classes, precision timer, 24-bit signed and unsigned integers, database extensions and abstraction layer, extensions for drawing, reflection, XML, buffers, chars, date/times, enumerations, strings, etc.</Description>
     <Copyright>Copyright © GPA, 2013.  All Rights Reserved.</Copyright>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <Version>2.4.323-beta</Version>
-    <AssemblyVersion>2.4.323.0</AssemblyVersion>
-    <FileVersion>2.4.323.0</FileVersion>
+    <AssemblyVersion>2.4.323.1</AssemblyVersion>
+    <FileVersion>2.4.323.1</FileVersion>
     <DocumentationFile>$(OutputPath)\$(AssemblyName).XML</DocumentationFile>
     <CodeAnalysisRuleSet>GSF.Core.ruleset</CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -49,14 +49,6 @@
     <Exec Command="$(SIGNTOOL) $(TargetPath)" />
   </Target>
   <ItemGroup>
-    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <HintPath>..\..\Dependencies\NuGet\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ExpressionEvaluator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=90d9f15d622e2348, processorArchitecture=MSIL">
-      <HintPath>..\..\Dependencies\NuGet\ExpressionEvaluator.2.0.4.0\lib\net40\ExpressionEvaluator.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Mono.Security">
       <HintPath>..\..\Dependencies\Mono\Mono.Security.dll</HintPath>
       <Private>False</Private>
@@ -102,6 +94,7 @@
     <None Include="GSF.Core.ruleset" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="ExpressionEvaluator" Version="2.0.4" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
   </ItemGroup>
   <ItemGroup>
