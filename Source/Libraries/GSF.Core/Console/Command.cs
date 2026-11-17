@@ -20,6 +20,8 @@
 //       Generated original version of source code.
 //  05/28/2025 - AJ Stadlin
 //       CustomProcessStartInfo added
+//  11/17/2026 - AJ Stadlin
+//       SafeDisposal added: Kill a still-running process before Close() [AI:CLAUDE]
 //
 //******************************************************************************************************
 
@@ -46,6 +48,7 @@ namespace GSF.Console
             private readonly StringBuilder m_standardError;
             private int m_exitCode;
             private bool m_disposed;
+            private readonly bool m_safeDisposal;
 
             #endregion
 
@@ -85,6 +88,9 @@ namespace GSF.Console
 
                     m_process.StartInfo = CustomProcessStartInfo;
                 }
+
+                // When safe disposal is true, a still-running process is killed and then closed prior to process.Dispose()
+                m_safeDisposal = SafeDisposal;
 
                 m_process.OutputDataReceived += m_process_OutputDataReceived;
                 m_process.ErrorDataReceived += m_process_ErrorDataReceived;
@@ -162,6 +168,31 @@ namespace GSF.Console
                                 m_process.OutputDataReceived -= m_process_OutputDataReceived;
                                 m_process.ErrorDataReceived -= m_process_ErrorDataReceived;
 
+                                if (m_safeDisposal)
+                                {
+                                    // Kill the process if it is still running, then Close() to release the
+                                    // process handle. HasExited must be checked before Close(), since Close()
+                                    // disassociates the process from this object.
+                                    try
+                                    {
+                                        if (!m_process.HasExited)
+                                        {
+                                            m_process.Kill();
+                                            m_process.WaitForExit(5000);
+                                        }
+                                    }
+                                    catch (InvalidOperationException)
+                                    {
+                                        // Process was never started or has already been released
+                                    }
+                                    catch (System.ComponentModel.Win32Exception)
+                                    {
+                                        // Process could not be terminated (access denied or already terminating)
+                                    }
+
+                                    m_process.Close();
+                                }
+
                                 m_process.Dispose();
                             }
                         }
@@ -208,6 +239,13 @@ namespace GSF.Console
 
             #endregion
         }
+
+        /// <summary>
+        /// When Command.SafeDisposal is true, a still-running process is killed, then process.Close() is performed prior to process.Dispose()
+        /// Set SafeDisposal before Creating or Executing the CommandProcess
+        /// SafeDisposal Default is false for backward compatibility
+        /// </summary>
+        public static bool SafeDisposal { get; set; } = false;
 
         /// <summary>
         /// Customizable Command.ProcessStartInfo to set prior to Creating or Executing the CommandProcess.
